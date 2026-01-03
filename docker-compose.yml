@@ -7,5 +7,15 @@ services:
         ports:
             - "5000:8080"   # HTTP
         environment:
-            ASPNETCORE_ENVIRONMENT: Development
-            ASPNETCORE_URLS: "http://0.0.0.0:8080"
+            - AdminUser__UserName=${AdminUser__UserName}
+            - AdminUser__Password=${AdminUser__Password} 
+
+            - Jwt__Secret=${Jwt__Secret}
+            - Jwt__Issuer=${Jwt__Issuer}
+            - Jwt__Audience=${Jwt__Audience}
+            - Jwt__ExpirationMinutes=${Jwt__ExpirationMinutes}
+
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS="http://0.0.0.0:8080"
+        volumes:
+            - ./Storage:/app/Storage
