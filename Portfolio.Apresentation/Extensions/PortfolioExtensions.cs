@@ -22,12 +22,11 @@ public static class PortfolioExtensions
 
         group.MapPost("/override", ([FromServices] BackedStateService jsonBackedStateService, [FromBody] IEnumerable<ProjectItem> projectItem) =>
         {
-            
             foreach (var project in projectItem)
             {
                 foreach (var image in project.Images)
                 {
-                    if(Base64.IsValid(image))
+                    if (Base64.IsValid(image))
                     {
                         var base64 = image;
                         var path = $"{DateTime.Now}{project.Title}.jpeg";

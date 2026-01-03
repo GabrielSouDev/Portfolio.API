@@ -29,7 +29,7 @@ public class ProjectItem
     public IEnumerable<string> Database { get; set; } = new List<string>();
 
     // JSON usa "image" singular → mapear para Images
-    [JsonPropertyName("image")]
+    [JsonPropertyName("images")]
     [JsonConverter(typeof(StringOrArrayConverter))]
     public IEnumerable<string> Images { get; set; } = new List<string>();
 

@@ -6,17 +6,25 @@ namespace Portfolio.API.Services;
 
 public class JsonPersistenceService : IHostedService
 {
-    private readonly string _path = Path.Combine(Environment.CurrentDirectory, "Storage", "projects.json");
+    private readonly string _storagePath = Path.Combine(Environment.CurrentDirectory, "Storage");
+    private readonly Dictionary<string, string> _archivesPaths;
     private readonly BackedStateService _backedState;
     private Action<IReadOnlyList<ProjectItem>>? _handler;
 
     public JsonPersistenceService(BackedStateService backedState)
     {
         _backedState = backedState;
+        _archivesPaths = new Dictionary<string, string>()
+        {
+            {"projects", Path.Combine(_storagePath, "projects.json")},
+        };
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        if (!Directory.Exists(_storagePath))
+            Directory.CreateDirectory(_storagePath);
+
         _handler = OverrideProjects;
         _backedState.OnChange += _handler;
 
@@ -32,23 +40,28 @@ public class JsonPersistenceService : IHostedService
 
     private void ReadProjects()
     {
-        var jsonString = File.ReadAllText(_path);
+        var path = _archivesPaths["projects"];
+        if (!File.Exists(path)) return;
 
-        if (string.IsNullOrEmpty(jsonString)) Console.WriteLine("Arquivo sem conteudo!");
+        var jsonString = File.ReadAllText(path);
+        if (string.IsNullOrEmpty(jsonString)) return;
 
         var projects = JsonSerializer.Deserialize<IEnumerable<ProjectItem>>(jsonString);
-
-        if (projects == null) Console.WriteLine("Erro em Desserialização!");
+        if (projects is null) throw new FileLoadException("Erro na Desserialização de Lista de Projetos!");
 
         var snapshot = projects?.ToList().AsReadOnly();
-        _backedState.SetProjects(snapshot);
+        _backedState.SetProjects(snapshot!);
     }
+
 
     public void OverrideProjects(IReadOnlyList<ProjectItem> projects)
     {
-        string newProjects = JsonSerializer.Serialize(projects, new JsonSerializerOptions { WriteIndented = true });
+        var path = _archivesPaths["projects"];
+        var tmpPath = path + ".tmp";
 
-        File.WriteAllText(_path, newProjects);
-        Console.WriteLine("Arquivo sobrescrito com sucesso!");
+        string json = JsonSerializer.Serialize(projects, new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(tmpPath, json);
+
+        File.Move(tmpPath, path, overwrite: true);
     }
 }
