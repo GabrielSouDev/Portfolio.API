@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Portfolio.API.Extensions;
 using Portfolio.API.Models;
 using Portfolio.API.Services;
@@ -15,7 +17,6 @@ builder.Services.AddHostedService<JsonPersistenceService>();
 builder.Configuration.AddEnvironmentVariables();
 builder.Services.Configure<AdminUser>(builder.Configuration.GetSection("AdminUser"));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
-
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

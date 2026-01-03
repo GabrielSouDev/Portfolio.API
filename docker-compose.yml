@@ -15,7 +15,11 @@ services:
             - Jwt__Audience=${Jwt__Audience}
             - Jwt__ExpirationMinutes=${Jwt__ExpirationMinutes}
 
-            - ASPNETCORE_ENVIRONMENT=Development
-            - ASPNETCORE_URLS="http://0.0.0.0:8080"
+            - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+            - ASPNETCORE_URLS=http://0.0.0.0:8080
         volumes:
             - ./Storage:/app/Storage
+            - dp-keys:/root/.aspnet/DataProtection-Keys
+
+volumes:
+    dp-keys:

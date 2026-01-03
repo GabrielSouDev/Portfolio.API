@@ -9,7 +9,7 @@ public static class PortfolioExtensions
 { 
     public static void AddPortfolioExtensions(this WebApplication app)
     {
-        var group = app.MapGroup("portfolio");
+        var group = app.MapGroup("portfolio").WithTags("Portfolio");
 
         group.MapGet("", ([FromServices] BackedStateService jsonBackedStateService) =>
         {

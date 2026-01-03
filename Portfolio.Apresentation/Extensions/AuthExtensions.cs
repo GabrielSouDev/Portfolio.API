@@ -13,7 +13,7 @@ public static class AuthExtensions
 {
     public static void AddAuthExtensions(this WebApplication app)
     {
-        var group = app.MapGroup("auth");
+        var group = app.MapGroup("auth").WithTags("Auth");
 
         group.MapPost("/login", ([FromServices] IOptions<AdminUser> masterUser,
                                  [FromServices] IOptions<JwtOptions> jwtOptions,
